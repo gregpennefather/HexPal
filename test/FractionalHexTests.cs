@@ -4,6 +4,7 @@ using NUnit.Framework;
 
 namespace test
 {
+    [TestFixture]
     public class FractionalHexTests
     {
 
@@ -78,6 +79,19 @@ namespace test
 
             // Assert
             Assert.AreEqual(new FractionalHex(5.5, 11), res);
+        }
+
+        [Test]
+        public void Length_CorrectlyCalculatesLengthFromOrigin()
+        {
+            // Arrange
+            var hex1 = new FractionalHex(2,1);
+
+            // Act + Assert
+            var res = hex1.Length;
+
+            // Assert
+            Assert.AreEqual(3, res);
         }
     }
 }

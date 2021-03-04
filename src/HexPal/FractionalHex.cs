@@ -12,6 +12,7 @@ namespace HexPal
         public double Q => vector[0];
         public double R => vector[1];
         public double S => vector[2];
+        public double Length => (Math.Abs(Q) + Math.Abs(R) + Math.Abs(S)) / 2;
 
         public FractionalHex(double q, double r, double s)
         {

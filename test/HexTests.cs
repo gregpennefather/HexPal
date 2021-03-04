@@ -75,5 +75,18 @@ namespace test
             // Assert
             Assert.AreEqual(new Hex(5,10), res);
         }
+
+        [Test]
+        public void Length_CorrectlyCalculatesLengthFromOrigin()
+        {
+            // Arrange
+            var hex1 = new Hex(2,1);
+
+            // Act + Assert
+            var res = hex1.Length;
+
+            // Assert
+            Assert.AreEqual(3, res);
+        }
     }
 }

@@ -6,29 +6,39 @@ namespace HexPal
 {
     public struct Hex : IEquatable<Hex>, IEqualityComparer<Hex>
     {
+        public static Hex[] Directions = new[] { new Hex(1, 0), new Hex(0, 1), new Hex(-1, 1), new Hex(-1, 0), new Hex(0, -1), new Hex(1, -1) };
+
         private int[] vector;
 
         public int Q => vector[0];
         public int R => vector[1];
         public int S => vector[2];
+        public int Length => (Math.Abs(Q) + Math.Abs(R) + Math.Abs(S)) / 2;
 
         public Hex(int q, int r, int s)
         {
-            if (q+r+s != 0) {
+            if (q + r + s != 0)
+            {
                 throw new ArgumentException($"Invalid coords ({q},{r},{s})");
             }
 
             vector = new[] { q, r, s };
         }
 
-        public Hex(int q, int r) : this(q, r, -q-r)
+        public Hex(int q, int r) : this(q, r, -q - r)
         {
+        }
+
+        public override string ToString()
+        {
+            return $"({Q},{R})";
         }
 
         public override bool Equals(object other) => other is Hex otherHex && this.Equals(otherHex);
 
-        public bool Equals(Hex other) {
-            return (Q,R,S) == (other.Q, other.R, other.S);
+        public bool Equals(Hex other)
+        {
+            return (Q, R, S) == (other.Q, other.R, other.S);
         }
 
         public bool Equals(Hex x, Hex y)
@@ -38,7 +48,7 @@ namespace HexPal
 
         public override int GetHashCode()
         {
-            return Q ^ R ^ S;;
+            return Q ^ R ^ S; ;
         }
 
         public int GetHashCode([DisallowNull] Hex obj)
