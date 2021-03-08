@@ -68,12 +68,38 @@ namespace test
         }
 
         [Test]
-        public void AStarSearch_SimplePath() {
+        public void AStarSearch_NoPath() {
             // Arrange
-            var origin = new Hex(0,0);
-            var target = new Hex(1,2);
+            var origin = new Hex(-1,0);
+            var target = new Hex(5,5);
 
-            var tiles = new List<Tuple<float, Hex>>();
+            var tiles = new List<WeightedHex>();
+            var radius = 1;
+            for (int q = -radius; q <= radius; q++)
+            {
+                var r1 = Math.Max(-radius, -q - radius);
+                var r2 = Math.Min(radius, -q + radius);
+
+                for (int r = r1; r <= r2; r++)
+                {
+                    tiles.Add(new WeightedHex(1, new Hex(q, r)));
+                }
+            }
+
+            // Act
+            var path = Pathfinder.AStar(origin, target, tiles);
+
+            // Assert
+            Assert.IsNull(path);
+        }
+
+        [Test]
+        public void AStarSearch_WeightedPath() {
+            // Arrange
+            var origin = new Hex(-1,0);
+            var target = new Hex(1,0);
+
+            var tiles = new List<WeightedHex>();
             var radius = 5;
             for (int q = -radius; q <= radius; q++)
             {
@@ -82,7 +108,7 @@ namespace test
 
                 for (int r = r1; r <= r2; r++)
                 {
-                    tiles.Add(new Tuple<float, Hex>(1, new Hex(q, r)));
+                    tiles.Add(new WeightedHex(q == 0 && (r == 0 || r == -1) ? 5 : 1, new Hex(q, r)));
                 }
             }
 
@@ -92,10 +118,12 @@ namespace test
             // Assert
             Assert.Multiple(() => {
                Assert.AreEqual(3, path.Count);
-               Assert.AreEqual(new Hex(1,0), path[0]);
-               Assert.AreEqual(new Hex(1,1), path[1]);
-               Assert.AreEqual(new Hex(1,2), path[2]);
+               Assert.AreEqual(new Hex(-1,1), path[0]);
+               Assert.AreEqual(new Hex(0,1), path[1]);
+               Assert.AreEqual(new Hex(1,0), path[2]);
             });
         }
+
+
     }
 }

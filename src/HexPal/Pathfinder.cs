@@ -47,7 +47,7 @@ namespace HexPal
             return path.ToList();
         }
 
-        public static IList<Hex> AStar(Hex origin, Hex target, IList<Tuple<float, Hex>> validPositions)
+        public static IList<Hex> AStar(Hex origin, Hex target, IList<WeightedHex> validPositions)
         {
             var frontier = new PriorityQueue<float, Hex>();
             var path = new List<Hex>();
@@ -69,9 +69,15 @@ namespace HexPal
                     break;
                 }
 
+                if (!validPositions.Any(pair => pair.Hex == current)) {
+                    continue;
+                }
+
+                WeightedHex weightedHex = validPositions.First(pair => pair.Hex == current);
+
                 foreach (var next in current.Neighbours())
                 {
-                    var newCost = costSoFar[current] + current.DistanceTo(next);
+                    var newCost = costSoFar[current] + weightedHex.Weight;
                     if (!cameFrom.ContainsKey(next) || newCost < costSoFar[next])
                     {
                         costSoFar[next] = newCost;
@@ -84,6 +90,11 @@ namespace HexPal
 
 
             var step = target;
+
+            if (!cameFrom.ContainsKey(target)) {
+                return null;
+            }
+
             while (step != origin)
             {
                 path.Add(step);
