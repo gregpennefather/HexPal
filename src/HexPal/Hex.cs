@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("HexPalTest")]
 namespace HexPal
 {
     public struct Hex : IEquatable<Hex>, IEqualityComparer<Hex>
