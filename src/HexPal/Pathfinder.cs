@@ -47,7 +47,12 @@ namespace HexPal
             return path.ToList();
         }
 
-        public static IList<Hex> AStar(Hex origin, Hex target, IList<WeightedHex> validPositions)
+        public static IList<Hex> AStar(Hex start, Hex goal, Dictionary<Hex, float> pathingInfo)
+        {
+            return AStar(start, new List<Hex>() { goal }, pathingInfo);
+        }
+
+        public static IList<Hex> AStar(Hex start, IList<Hex> goal, Dictionary<Hex, float> pathingInfo)
         {
             var frontier = new PriorityQueue<float, Hex>();
             var path = new List<Hex>();
@@ -56,46 +61,49 @@ namespace HexPal
             var costSoFar = new Dictionary<Hex, float>();
 
 
-            frontier.Add(0, origin);
-            cameFrom[origin] = origin;
-            costSoFar[origin] = 0.0f;
+            frontier.Add(0, start);
+            cameFrom[start] = start;
+            costSoFar[start] = 0.0f;
+
+            Hex? foundTarget = null;
 
             while (frontier.Any())
             {
                 var current = frontier.Pop();
 
-                if (current == target)
+                if (goal.Contains(current))
                 {
+                    foundTarget = current;
                     break;
                 }
 
-                if (!validPositions.Any(pair => pair.Hex == current)) {
+                if (!pathingInfo.ContainsKey(current)) {
                     continue;
                 }
 
-                WeightedHex weightedHex = validPositions.First(pair => pair.Hex == current);
-
                 foreach (var next in current.Neighbours())
                 {
-                    var newCost = costSoFar[current] + weightedHex.Weight;
+                    var newCost = costSoFar[current] + pathingInfo[current];
                     if (!cameFrom.ContainsKey(next) || newCost < costSoFar[next])
                     {
                         costSoFar[next] = newCost;
-                        var priority = newCost + next.DistanceTo(target);
+
+                        var closestTarget = goal.Select(t => next.DistanceTo(t)).Min();
+
+                        var priority = newCost + closestTarget;
                         frontier.Add(priority, next);
                         cameFrom[next] = current;
                     }
                 }
             }
 
-
-            var step = target;
-
-            if (!cameFrom.ContainsKey(target)) {
+            if (!foundTarget.HasValue) {
                 return null;
             }
 
-            while (step != origin)
+            var step = foundTarget.Value;
+
+            while (step != start)
             {
                 path.Add(step);
                 step = cameFrom[step];
