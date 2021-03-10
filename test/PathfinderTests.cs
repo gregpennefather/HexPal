@@ -165,7 +165,6 @@ namespace test
             });
         }
 
-
         [Test]
         public void AStarSearch_MultipleGoalsWeightedPath()
         {
@@ -203,6 +202,37 @@ namespace test
                 Assert.AreEqual(new Hex(0, -3), path[1]);
                 Assert.AreEqual(new Hex(0, -4), path[2]);
             });
+        }
+
+        [Test]
+        public void AStarSearch_GoalIsUnpathable()
+        {
+            // Arrange
+            var origin = new Hex(0, -1);
+            var targets = new Hex(0, 1);
+
+            var tiles = new Dictionary<Hex, float>();
+            var radius = 5;
+            for (int q = -radius; q <= radius; q++)
+            {
+                var r1 = Math.Max(-radius, -q - radius);
+                var r2 = Math.Min(radius, -q + radius);
+
+                for (int r = r1; r <= r2; r++)
+                {
+                    var weight = 1;
+                    if (q == 0 && r == 1) {
+                        continue;
+                    }
+                    tiles[new Hex(q,r)] = weight;
+                }
+            }
+
+            // Act
+            var path = Pathfinder.AStar(origin, targets, tiles);
+
+            // Assert
+            Assert.IsNull(path);
         }
     }
 }

@@ -60,6 +60,10 @@ namespace HexPal
             var cameFrom = new Dictionary<Hex, Hex>();
             var costSoFar = new Dictionary<Hex, float>();
 
+            var pathableGoals = goal.Where(g => pathingInfo.ContainsKey(g));
+            if (pathableGoals.Count() == 0) {
+                return null;
+            }
 
             frontier.Add(0, start);
             cameFrom[start] = start;
@@ -71,7 +75,7 @@ namespace HexPal
             {
                 var current = frontier.Pop();
 
-                if (goal.Contains(current))
+                if (pathableGoals.Contains(current))
                 {
                     foundTarget = current;
                     break;
@@ -88,7 +92,7 @@ namespace HexPal
                     {
                         costSoFar[next] = newCost;
 
-                        var closestTarget = goal.Select(t => next.DistanceTo(t)).Min();
+                        var closestTarget = pathableGoals.Select(t => next.DistanceTo(t)).Min();
 
                         var priority = newCost + closestTarget;
                         frontier.Add(priority, next);
