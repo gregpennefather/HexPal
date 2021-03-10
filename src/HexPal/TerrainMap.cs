@@ -25,14 +25,27 @@ namespace HexPal
             Terrain = terrtainLayer;
         }
 
-        public IList<Hex> Navigate(Hex start, Hex goal)
+        public IList<Hex> Navigate(Hex start, Hex goal, IList<Hex> unpathableHexes = null)
         {
-            return Pathfinder.AStar(start, goal, Terrain.PathingSnapshot);
+
+            return Navigate(start, new List<Hex>() { goal }, unpathableHexes);
         }
 
-        public IList<Hex> Navigate(Hex start, IList<Hex> goals)
+        public IList<Hex> Navigate(Hex start, IList<Hex> goals, IList<Hex> unpathableHexes = null)
         {
-            return Pathfinder.AStar(start, goals, Terrain.PathingSnapshot);
+            unpathableHexes = unpathableHexes ?? new List<Hex>();
+
+            var pathingInfo = new Dictionary<Hex, float>();
+
+            foreach (var pathSnapshot in Terrain.PathingSnapshot)
+            {
+                if (!unpathableHexes.Contains(pathSnapshot.Key))
+                {
+                    pathingInfo[pathSnapshot.Key] = pathSnapshot.Value;
+                }
+            }
+
+            return Pathfinder.AStar(start, goals, pathingInfo);
         }
     }
 }
