@@ -118,13 +118,54 @@ namespace HexPal
             return path;
         }
 
+        public static IList<Hex> AStar(Hex start, Hex goal, IList<Hex> pathingInfo) {
+            var dict = new Dictionary<Hex, float>();
+
+            foreach(var tile in pathingInfo) {
+                dict[tile] = 1;
+            }
+
+            return AStar(start, goal, dict);
+        }
+
+        public static IList<Hex> Range(Hex start, float range, Dictionary<Hex, float> pathingInfo) {
+            var result = new List<Hex>();
+
+            var frontier = new PriorityQueue<float, Hex>();
+            frontier.Add(0, start);
+            pathingInfo.Remove(start);
+
+            while(frontier.Any()) {
+                var current = frontier.PopFull();
+
+                foreach (var next in current.Item2.Neighbours())
+                {
+                    if(!pathingInfo.ContainsKey(next))
+                    {
+                        continue;
+                    }
+
+                    var nextWeight = pathingInfo[next];
+
+                    var newDistance = current.Item1 + nextWeight;
+                    if (next.DistanceTo(start) <= range && newDistance <= range) {
+                        frontier.Add(newDistance, next);
+                        result.Add(next);
+                        pathingInfo.Remove(next);
+                    }
+                }
+            }
+
+            return result;
+        }
+
 
         internal class PriorityQueue<F, T> : IEnumerable<T> where F: IComparable
         {
-            private LinkedList<Tuple<F, T>> list = new LinkedList<Tuple<F, T>>();
+            private LinkedList<(F,T)> list = new LinkedList<(F,T)>();
 
             public void Add(F key, T value) {
-                LinkedListNode<Tuple<F,T>> addBefore = null;
+                LinkedListNode<(F,T)> addBefore = null;
 
                 var current = list.First;
                 while(current != null) {
@@ -136,7 +177,7 @@ namespace HexPal
                     current = current.Next;
                 }
 
-                var pairValue = new Tuple<F,T>(key, value);
+                (F,T) pairValue = (key, value);
 
                 if (addBefore != null) {
                     list.AddBefore(addBefore, pairValue);
@@ -147,6 +188,12 @@ namespace HexPal
 
             public T Pop() {
                 var value = list.First.Value.Item2;
+                list.RemoveFirst();
+                return value;
+            }
+
+            public (F, T) PopFull() {
+                var value = list.First.Value;
                 list.RemoveFirst();
                 return value;
             }

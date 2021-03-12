@@ -47,5 +47,21 @@ namespace HexPal
 
             return Pathfinder.AStar(start, goals, pathingInfo);
         }
+
+        public IList<Hex> Range(Hex start, float range, IList<Hex> unpathableHexes = null) {
+            unpathableHexes = unpathableHexes ?? new List<Hex>();
+
+            var pathingInfo = new Dictionary<Hex, float>();
+
+            foreach (var pathSnapshot in Terrain.PathingSnapshot)
+            {
+                if (!unpathableHexes.Contains(pathSnapshot.Key))
+                {
+                    pathingInfo[pathSnapshot.Key] = pathSnapshot.Value;
+                }
+            }
+
+            return Pathfinder.Range(start, range, pathingInfo);
+        }
     }
 }
