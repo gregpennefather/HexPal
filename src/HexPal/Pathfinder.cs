@@ -69,7 +69,7 @@ namespace HexPal
             cameFrom[start] = start;
             costSoFar[start] = 0.0f;
 
-            Hex? foundTarget = null;
+            Hex foundTarget = null;
 
             while (frontier.Any())
             {
@@ -101,16 +101,14 @@ namespace HexPal
                 }
             }
 
-            if (!foundTarget.HasValue) {
+            if (foundTarget == null) {
                 return null;
             }
 
-            var step = foundTarget.Value;
-
-            while (step != start)
+            while (foundTarget != start)
             {
-                path.Add(step);
-                step = cameFrom[step];
+                path.Add(foundTarget);
+                foundTarget = cameFrom[foundTarget];
             }
             path.Reverse();
 

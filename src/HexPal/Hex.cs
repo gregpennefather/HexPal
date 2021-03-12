@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("HexPalTest")]
 namespace HexPal
 {
-    public struct Hex : IEquatable<Hex>, IEqualityComparer<Hex>
+    public class Hex : IEquatable<Hex>, IEqualityComparer<Hex>
     {
         public static Hex[] Directions = new[] { new Hex(1, 0), new Hex(0, 1), new Hex(-1, 1), new Hex(-1, 0), new Hex(0, -1), new Hex(1, -1) };
 
@@ -40,7 +40,7 @@ namespace HexPal
 
         public bool Equals(Hex other)
         {
-            return (Q, R, S) == (other.Q, other.R, other.S);
+            return !object.ReferenceEquals(other, null) && (Q, R, S) == (other.Q, other.R, other.S);
         }
 
         public bool Equals(Hex x, Hex y)
@@ -60,11 +60,24 @@ namespace HexPal
 
         public static bool operator ==(Hex a, Hex b)
         {
+            if (object.ReferenceEquals(a, null) || object.ReferenceEquals(b, null))
+            {
+                return object.ReferenceEquals(a, null) && object.ReferenceEquals(b, null);
+            }
             return a.Equals(b);
         }
 
         public static bool operator !=(Hex a, Hex b)
         {
+            if (object.ReferenceEquals(a, null))
+            {
+                return !object.ReferenceEquals(b, null);
+            }
+
+            if (object.ReferenceEquals(b, null))
+            {
+                return !object.ReferenceEquals(a, null);
+            }
             return !a.Equals(b);
         }
 

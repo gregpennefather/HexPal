@@ -88,5 +88,31 @@ namespace test
             // Assert
             Assert.AreEqual(3, res);
         }
+
+        [TestCase(true,true,true)]
+        [TestCase(true,false,false)]
+        [TestCase(false,true,false)]
+        [TestCase(false,false,true)]
+        public void Equality_EqualityNullHandling(bool aIsNull, bool bIsNull, bool result) {
+            // Arrange
+            var a = aIsNull ? null : new Hex(0,0);
+            var b = bIsNull ? null : new Hex(0,0);
+
+            // Assert
+            Assert.AreEqual(result, a == b);
+        }
+
+        [TestCase(true,true,false)]
+        [TestCase(false,false,false)]
+        [TestCase(true,false,true)]
+        [TestCase(false,true,true)]
+        public void Inequality_EqualityNullHandling(bool aIsNull, bool bIsNull, bool result) {
+            // Arrange
+            var a = aIsNull ? null : new Hex(0,0);
+            var b = bIsNull ? null : new Hex(0,0);
+
+            // Assert
+            Assert.AreEqual(result, a != b);
+        }
     }
 }
