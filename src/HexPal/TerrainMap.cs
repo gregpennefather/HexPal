@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 
 namespace HexPal
@@ -48,7 +49,7 @@ namespace HexPal
             return Pathfinder.AStar(start, goals, pathingInfo);
         }
 
-        public IList<Hex> Range(Hex start, float range, IList<Hex> unpathableHexes = null) {
+        public IList<Hex> Range(Hex start, float range, IEnumerable<Hex> unpathableHexes = null) {
             unpathableHexes = unpathableHexes ?? new List<Hex>();
 
             var pathingInfo = new Dictionary<Hex, float>();
