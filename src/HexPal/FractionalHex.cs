@@ -44,7 +44,7 @@ namespace HexPal
             return (int)Math.Pow(Math.Pow(Q, R), S);
         }
 
-        public int GetHashCode([DisallowNull] FractionalHex obj)
+        public int GetHashCode(FractionalHex obj)
         {
             return obj.GetHashCode();
         }

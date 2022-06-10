@@ -53,7 +53,7 @@ namespace HexPal
             return Q ^ R ^ S; ;
         }
 
-        public int GetHashCode([DisallowNull] Hex obj)
+        public int GetHashCode(Hex obj)
         {
             return obj.GetHashCode();
         }
