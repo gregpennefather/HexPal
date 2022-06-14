@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
+using Newtonsoft.Json;
 
 [assembly: InternalsVisibleTo("HexPalTest")]
 namespace HexPal
@@ -12,11 +14,18 @@ namespace HexPal
 
         private int[] vector;
 
+        [JsonProperty]
         public int Q => vector[0];
-        public int R => vector[1];
-        public int S => vector[2];
-        public int Length => (Math.Abs(Q) + Math.Abs(R) + Math.Abs(S)) / 2;
 
+        [JsonProperty]
+        public int R => vector[1];
+
+        [JsonProperty]
+        public int S => vector[2];
+
+        public int Length { get; }
+
+        [JsonConstructor]
         public Hex(int q, int r, int s)
         {
             if (q + r + s != 0)
@@ -25,6 +34,7 @@ namespace HexPal
             }
 
             vector = new[] { q, r, s };
+            Length = (Abs(q) + Abs(r) + Abs(s)) / 2;
         }
 
         public Hex(int q, int r) : this(q, r, -q - r)
@@ -94,6 +104,13 @@ namespace HexPal
         public static Hex operator *(Hex a, int m)
         {
             return new Hex(a.Q * m, a.R * m, a.S * m);
+        }
+
+        private int Abs(int i) {
+            if (i<0) {
+                return i*-1;
+            }
+            return i;
         }
     }
 }

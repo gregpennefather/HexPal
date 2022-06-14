@@ -5,4 +5,7 @@
         <Version>0.0.4.3</Version>
         <Authors>Greg Pennefather</Authors>
     </PropertyGroup>
+    <ItemGroup>
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    </ItemGroup>
 </Project>
